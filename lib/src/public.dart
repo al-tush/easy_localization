@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'localization.dart';
+import 'easy_localization_app.dart';
 
 /// {@template tr}
 /// Main function for translate your language keys
@@ -32,11 +33,14 @@ import 'localization.dart';
 /// ```
 /// {@endtemplate}
 String tr(
-  String key, {
+  String key, BuildContext? context, {
   List<String>? args,
   Map<String, String>? namedArgs,
   String? gender,
 }) {
+  if (context != null) {
+    EasyLocalization.of(context);
+  }
   return Localization.instance
       .tr(key, args: args, namedArgs: namedArgs, gender: gender);
 }

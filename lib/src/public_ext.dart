@@ -12,13 +12,13 @@ import 'public.dart' as ez;
 /// ```
 extension TextTranslateExtension on Text {
   /// {@macro tr}
-  Text tr(
+  Text tr(BuildContext? context,
           {List<String>? args,
           Map<String, String>? namedArgs,
           String? gender}) =>
       Text(
           ez.tr(
-            data ?? '',
+            data ?? '', context,
             args: args,
             namedArgs: namedArgs,
             gender: gender,
@@ -75,12 +75,12 @@ extension TextTranslateExtension on Text {
 /// ```
 extension StringTranslateExtension on String {
   /// {@macro tr}
-  String tr({
+  String tr(BuildContext? context, {
     List<String>? args,
     Map<String, String>? namedArgs,
     String? gender,
   }) =>
-      ez.tr(this, args: args, namedArgs: namedArgs, gender: gender);
+      ez.tr(this, context, args: args, namedArgs: namedArgs, gender: gender);
 
   /// {@macro plural}
   String plural(
