@@ -46,6 +46,10 @@ class EasyLocalizationController extends ChangeNotifier {
     // If saved locale then get
     else if (saveLocale && _savedLocale != null) {
       EasyLocalization.logger('Saved locale loaded ${_savedLocale.toString()}');
+      if (!supportedLocales.contains(_savedLocale)) {
+        _savedLocale = fallbackLocale;
+        EasyLocalization.logger('Unsupported locale changed  $_savedLocale');
+      }
       _locale = _savedLocale!;
     } else {
       // From Device Locale
