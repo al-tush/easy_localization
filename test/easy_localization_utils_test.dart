@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,6 +15,8 @@ dynamic overridePrint(Function() testFn) => () {
     };
 
 void main() {
+  Fimber.plantTree(CustomFormatTree(useColors: true));
+
   group('Utils', () {
     group('Locales', () {
       test('localeFromString only language code', () {

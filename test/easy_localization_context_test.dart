@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_logger/easy_logger.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +31,7 @@ class MyWidget extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          const Text('test').tr(),
+          const Text('test').tr(context),
           const Text('day').plural(1),
         ],
       ),
@@ -41,17 +40,8 @@ class MyWidget extends StatelessWidget {
 }
 
 void main() async {
-  EasyLocalization.logger.enableLevels = <LevelMessages>[
-    LevelMessages.error,
-    LevelMessages.warning,
-  ];
-
+  Fimber.plantTree(CustomFormatTree(useColors: true));
   SharedPreferences.setMockInitialValues({});
-  EasyLocalization.logger.enableLevels = <LevelMessages>[
-    LevelMessages.error,
-    LevelMessages.warning,
-  ];
-
   await EasyLocalization.ensureInitialized();
 
   group('BuildContext', () {

@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/easy_localization_controller.dart';
 import 'package:easy_localization/src/localization.dart';
-import 'package:easy_logger/easy_logger.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,6 +21,8 @@ dynamic overridePrint(Function() testFn) => () {
     };
 
 void main() {
+  Fimber.plantTree(CustomFormatTree(useColors: true));
+
   group('localization', () {
     var r1 = EasyLocalizationController(
         forceLocale: const Locale('en'),
@@ -45,11 +47,6 @@ void main() {
         saveLocale: false,
         assetLoader: const JsonAssetLoader());
     setUpAll(() async {
-      EasyLocalization.logger.enableLevels = <LevelMessages>[
-        LevelMessages.error,
-        LevelMessages.warning,
-      ];
-
       await r1.loadTranslations();
       await r2.loadTranslations();
       Localization.load(const Locale('en'), translations: r1.translations);
@@ -494,7 +491,7 @@ void main() {
       // });
       group('string', () {
         test('tr', () {
-          expect('test'.tr(), 'test');
+          expect('test'.tr(null), 'test');
         });
 
         test('plural', () {
@@ -512,7 +509,7 @@ void main() {
       // });
       group('string', () {
         test('tr', () {
-          expect(tr('test'), 'test');
+          expect(tr('test', null), 'test');
         });
         test('plural', () {
           expect(plural('day', 0), '0 days');

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/widgets.dart';
 
 import 'plural_rules.dart';
@@ -80,8 +81,10 @@ class Localization {
           translated = _modifiers[formatterName]!(translated);
         } else {
           if (logging) {
-            EasyLocalization.logger.warning(
-                'Undefined modifier $formatterName, available modifiers: ${_modifiers.keys.toString()}');
+            Fimber.w(
+              'Undefined modifier $formatterName, available modifiers: ${_modifiers.keys.toString()}',
+              stacktrace: StackTrace.current,
+            );
           }
         }
       }
@@ -189,7 +192,7 @@ class Localization {
     var resource = _translations?.get(key);
     if (resource == null) {
       if (logging) {
-        EasyLocalization.logger.warning('Localization key [$key] not found');
+        Fimber.w('Localization key [$key] not found', stacktrace: StackTrace.current);
       }
       if (_fallbackTranslations == null || !fallback) {
         return key;
@@ -197,8 +200,7 @@ class Localization {
         resource = _fallbackTranslations?.get(key);
         if (resource == null) {
           if (logging) {
-            EasyLocalization.logger
-                .warning('Fallback localization key [$key] not found');
+            Fimber.w('Fallback localization key [$key] not found', stacktrace: StackTrace.current);
           }
           return key;
         }

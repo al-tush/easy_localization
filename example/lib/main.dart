@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(LocaleKeys.title).tr(),
+        title: Text(LocaleKeys.title).tr(context),
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -112,9 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.grey.shade600,
                   fontSize: 19,
                   fontWeight: FontWeight.bold),
-            ).tr(args: ['aissat'], gender: _gender ? 'female' : 'male'),
+            ).tr(context, args: ['aissat'], gender: _gender ? 'female' : 'male'),
             Text(
-              tr(LocaleKeys.gender, gender: _gender ? 'female' : 'male'),
+              tr(LocaleKeys.gender, context, gender: _gender ? 'female' : 'male'),
               style: TextStyle(
                   color: Colors.grey.shade600,
                   fontSize: 15,
@@ -131,15 +131,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Spacer(
               flex: 1,
             ),
-            Text(LocaleKeys.msg).tr(args: ['aissat', 'Flutter']),
+            Text(LocaleKeys.msg).tr(context, args: ['aissat', 'Flutter']),
             Text(LocaleKeys.msg_named)
-                .tr(namedArgs: {'lang': 'Dart'}, args: ['Easy localization']),
+                .tr(context, namedArgs: {'lang': 'Dart'}, args: ['Easy localization']),
             Text(LocaleKeys.clicked).plural(counter),
             TextButton(
               onPressed: () {
                 incrementCounter();
               },
-              child: Text(LocaleKeys.clickMe).tr(),
+              child: Text(LocaleKeys.clickMe).tr(context),
             ),
             SizedBox(
               height: 15,
@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 context.resetLocale();
               },
-              child: Text(LocaleKeys.reset_locale).tr(),
+              child: Text(LocaleKeys.reset_locale).tr(context),
             ),
             Spacer(
               flex: 1,

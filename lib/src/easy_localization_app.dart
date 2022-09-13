@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/easy_localization_controller.dart';
-import 'package:easy_logger/easy_logger.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -91,7 +91,7 @@ class EasyLocalization extends StatefulWidget {
   })  : assert(supportedLocales.isNotEmpty),
         assert(path.isNotEmpty),
         super(key: key) {
-    EasyLocalization.logger.debug('Start');
+    Fimber.d('Start');
   }
 
   @override
@@ -107,9 +107,6 @@ class EasyLocalization extends StatefulWidget {
   /// start.
   static Future<void> ensureInitialized() async =>
       await EasyLocalizationController.initEasyLocation();
-
-  /// Customizable logger
-  static EasyLogger logger = EasyLogger(name: '🌎 Easy Localization');
 }
 
 class _EasyLocalizationState extends State<EasyLocalization> {
@@ -119,7 +116,7 @@ class _EasyLocalizationState extends State<EasyLocalization> {
 
   @override
   void initState() {
-    EasyLocalization.logger.debug('Init state');
+    Fimber.d('Init state');
     localizationController = EasyLocalizationController(
       saveLocale: widget.saveLocale,
       fallbackLocale: widget.fallbackLocale,
@@ -130,6 +127,7 @@ class _EasyLocalizationState extends State<EasyLocalization> {
       useFallbackTranslations: widget.useFallbackTranslations,
       path: widget.path,
       onLoadError: (FlutterError e) {
+        Fimber.e(e.message, stacktrace: e.stackTrace);
         setState(() {
           translationsLoadError = e;
         });
@@ -150,7 +148,7 @@ class _EasyLocalizationState extends State<EasyLocalization> {
 
   @override
   Widget build(BuildContext context) {
-    EasyLocalization.logger.debug('Build');
+    Fimber.d('Build');
     if (translationsLoadError != null) {
       return widget.errorWidget != null
           ? widget.errorWidget!(translationsLoadError)
@@ -199,7 +197,7 @@ class _EasyLocalizationProvider extends InheritedWidget {
       {Key? key, required this.delegate})
       : currentLocale = _localeState.locale,
         super(key: key, child: parent.child) {
-    EasyLocalization.logger.debug('Init provider');
+    Fimber.d('Init provider');
   }
 
   /// Get current locale
@@ -247,7 +245,7 @@ class _EasyLocalizationDelegate extends LocalizationsDelegate<Localization> {
 
   _EasyLocalizationDelegate(
       {this.localizationController, this.supportedLocales}) {
-    EasyLocalization.logger.debug('Init Localization Delegate');
+    Fimber.d('Init Localization Delegate');
   }
 
   @override
@@ -255,7 +253,7 @@ class _EasyLocalizationDelegate extends LocalizationsDelegate<Localization> {
 
   @override
   Future<Localization> load(Locale value) async {
-    EasyLocalization.logger.debug('Load Localization Delegate');
+    Fimber.d('Load Localization Delegate');
     if (localizationController!.translations == null) {
       await localizationController!.loadTranslations();
     }

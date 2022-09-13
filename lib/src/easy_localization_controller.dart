@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl_standalone.dart'
     if (dart.library.html) 'package:intl/intl_browser.dart';
@@ -41,14 +42,14 @@ class EasyLocalizationController extends ChangeNotifier {
       _locale = forceLocale;
     } else if (_savedLocale == null && startLocale != null) {
       _locale = _getFallbackLocale(supportedLocales, startLocale);
-      EasyLocalization.logger('Start locale loaded ${_locale.toString()}');
+      Fimber.d('Start locale loaded ${_locale.toString()}');
     }
     // If saved locale then get
     else if (saveLocale && _savedLocale != null) {
-      EasyLocalization.logger('Saved locale loaded ${_savedLocale.toString()}');
+      Fimber.d('Saved locale loaded ${_savedLocale.toString()}');
       if (!supportedLocales.contains(_savedLocale)) {
         _savedLocale = fallbackLocale;
-        EasyLocalization.logger('Unsupported locale changed  $_savedLocale');
+        Fimber.d('Unsupported locale changed  $_savedLocale');
       }
       _locale = _savedLocale!;
     } else {
@@ -119,7 +120,7 @@ class EasyLocalizationController extends ChangeNotifier {
       return await loadTranslationData(Locale(locale.languageCode));
     } on FlutterError catch (e) {
       // Disregard asset not found FlutterError when attempting to load base language fallback
-      EasyLocalization.logger.warning(e.message);
+      Fimber.w(e.message, stacktrace: e.stackTrace);
     }
     return null;
   }
@@ -138,7 +139,7 @@ class EasyLocalizationController extends ChangeNotifier {
     _locale = l;
     await loadTranslations();
     notifyListeners();
-    EasyLocalization.logger('Locale $locale changed');
+    Fimber.d('Locale $locale changed');
     await _saveLocale(_locale);
   }
 
@@ -146,7 +147,7 @@ class EasyLocalizationController extends ChangeNotifier {
     if (!saveLocale) return;
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString('locale', locale.toString());
-    EasyLocalization.logger('Locale $locale saved');
+    Fimber.d('Locale $locale saved');
   }
 
   static Future<void> initEasyLocation() async {
@@ -155,20 +156,20 @@ class EasyLocalizationController extends ChangeNotifier {
     _savedLocale = strLocale?.toLocale();
     final foundPlatformLocale = await findSystemLocale();
     _deviceLocale = foundPlatformLocale.toLocale();
-    EasyLocalization.logger.debug('Localization initialized');
+    Fimber.d('Localization initialized');
   }
 
   Future<void> deleteSaveLocale() async {
     _savedLocale = null;
     final preferences = await SharedPreferences.getInstance();
     await preferences.remove('locale');
-    EasyLocalization.logger('Saved locale deleted');
+    Fimber.d('Saved locale deleted');
   }
 
   Locale get deviceLocale => _deviceLocale;
 
   Future<void> resetLocale() async {
-    EasyLocalization.logger('Reset locale to platform locale $_deviceLocale');
+    Fimber.d('Reset locale to platform locale $_deviceLocale');
 
     await setLocale(_deviceLocale);
   }
