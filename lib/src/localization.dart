@@ -192,7 +192,7 @@ class Localization {
     var resource = _translations?.get(key);
     if (resource == null) {
       if (logging) {
-        Fimber.w('Localization key [$key] not found', stacktrace: StackTrace.current);
+        Fimber.w('Localization key [$key] not found');
       }
       if (_fallbackTranslations == null || !fallback) {
         return key;
@@ -200,7 +200,7 @@ class Localization {
         resource = _fallbackTranslations?.get(key);
         if (resource == null) {
           if (logging) {
-            Fimber.w('Fallback localization key [$key] not found', stacktrace: StackTrace.current);
+            Fimber.w('Fallback localization key [$key] not found');
           }
           return key;
         }
