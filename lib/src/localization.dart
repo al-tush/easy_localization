@@ -99,7 +99,7 @@ class Localization {
   String _replaceArgs(String res, List<String>? args) {
     if (args == null || args.isEmpty) return res;
     for (var str in args) {
-      res = res.replaceFirst(_replaceArgRegex, str);
+      res = res.replaceFirst(_replaceArgRegex, trNum(str));
     }
     return res;
   }
@@ -107,7 +107,7 @@ class Localization {
   String _replaceNamedArgs(String res, Map<String, String>? args) {
     if (args == null || args.isEmpty) return res;
     args.forEach((String key, String value) =>
-        res = res.replaceAll(RegExp('{$key}'), value));
+        res = res.replaceAll(RegExp('{$key}'), trNum(value)));
     return res;
   }
 
@@ -207,5 +207,39 @@ class Localization {
       }
     }
     return resource;
+  }
+
+  String trNum(String value) {
+    switch (_locale.languageCode) {
+      case 'ar':
+      // Arabic digits
+        return value
+            .replaceAll('0', '٠')
+            .replaceAll('1', '١')
+            .replaceAll('2', '٢')
+            .replaceAll('3', '٣')
+            .replaceAll('4', '٤')
+            .replaceAll('5', '٥')
+            .replaceAll('6', '٦')
+            .replaceAll('7', '٧')
+            .replaceAll('8', '٨')
+            .replaceAll('9', '٩');
+      case 'fa':
+      // Persian digits
+      // !! All charcodes are different from the arabic ones. Do not combine Arabic and Persian digits in one number!!
+        return value
+            .replaceAll('0', '۰')
+            .replaceAll('1', '۱')
+            .replaceAll('2', '۲')
+            .replaceAll('3', '۳')
+            .replaceAll('4', '۴')
+            .replaceAll('5', '۵')
+            .replaceAll('6', '۶')
+            .replaceAll('7', '۷')
+            .replaceAll('8', '۸')
+            .replaceAll('9', '۹');
+      default:
+        return value;
+    }
   }
 }

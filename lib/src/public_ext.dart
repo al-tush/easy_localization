@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import 'easy_localization_app.dart';
+import 'localization.dart';
 import 'public.dart' as ez;
 
 /// Text widget extension method for access to [tr()] and [plural()]
@@ -98,6 +99,20 @@ extension StringTranslateExtension on String {
         name: name,
         format: format,
       );
+
+  String trNum(BuildContext? context) {
+    if (context != null) {
+      EasyLocalization.of(context);
+    }
+    return Localization.instance.trNum(this);
+  }
+
+}
+
+extension NumTranslateExtension on num {
+  String trNum(BuildContext? context) {
+    return '$this'.trNum(context);
+  }
 }
 
 /// BuildContext extension method for access to [locale], [supportedLocales], [fallbackLocale], [delegates] and [deleteSaveLocale()]
