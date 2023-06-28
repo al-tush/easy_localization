@@ -17,7 +17,7 @@ dependencies:
   intl: '>=0.17.0-0 <=0.17.0'
   args: ^2.3.1
   path: ^1.8.1
-  fimber: ^0.6.6
+  fimber: ^0.7.0
   flutter_localizations:
     sdk: flutter
 
