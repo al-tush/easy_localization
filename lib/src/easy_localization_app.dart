@@ -259,6 +259,7 @@ class _EasyLocalizationDelegate extends LocalizationsDelegate<Localization> {
     }
 
     Localization.load(value,
+        supportedLocales: supportedLocales!,
         translations: localizationController!.translations,
         fallbackTranslations: localizationController!.fallbackTranslations);
     return Future.value(Localization.instance);

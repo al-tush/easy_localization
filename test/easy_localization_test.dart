@@ -49,7 +49,7 @@ void main() {
     setUpAll(() async {
       await r1.loadTranslations();
       await r2.loadTranslations();
-      Localization.load(const Locale('en'), translations: r1.translations);
+      Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations);
     });
     test('is a localization object', () {
       expect(Localization.instance, isInstanceOf<Localization>());
@@ -64,13 +64,14 @@ void main() {
 
     test('load() succeeds', () async {
       expect(
-          Localization.load(const Locale('en'), translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
           true);
     });
 
     test('load() with fallback succeeds', () async {
       expect(
           Localization.load(const Locale('en'),
+              supportedLocales: const [Locale('en', 'us')],
               translations: r1.translations,
               fallbackTranslations: r2.translations),
           true);
@@ -108,7 +109,7 @@ void main() {
 
     test('load() Failed assertion', () async {
       try {
-        Localization.load(const Locale('en'), translations: null);
+        Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: null);
       } on AssertionError catch (e) {
         // throw  AssertionError('Expected ArgumentError');
         expect(e, isAssertionError);
@@ -117,19 +118,20 @@ void main() {
 
     test('load() correctly sets locale path', () async {
       expect(
-          Localization.load(const Locale('en'), translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
           true);
       expect(Localization.instance.tr('path'), 'path/en.json');
     });
 
     test('load() respects useOnlyLangCode', () async {
       expect(
-          Localization.load(const Locale('en'), translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
           true);
       expect(Localization.instance.tr('path'), 'path/en.json');
 
       expect(
           Localization.load(const Locale('en', 'us'),
+              supportedLocales: const [Locale('en', 'us')],
               translations: r2.translations),
           true);
       expect(Localization.instance.tr('path'), 'path/en-us.json');
@@ -202,6 +204,7 @@ void main() {
       setUpAll(() async {
         await r.loadTranslations();
         Localization.load(const Locale('en'),
+            supportedLocales: const [Locale('en', 'us')],
             translations: r.translations,
             fallbackTranslations: r.fallbackTranslations);
       });
@@ -386,6 +389,7 @@ void main() {
       setUpAll(() async {
         await r.loadTranslations();
         Localization.load(const Locale('en'),
+            supportedLocales: const [Locale('en', 'us')],
             translations: r.translations,
             fallbackTranslations: r.fallbackTranslations);
       });

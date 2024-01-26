@@ -8,6 +8,7 @@ import 'translations.dart';
 class Localization {
   Translations? _translations, _fallbackTranslations;
   late Locale _locale;
+  late List<Locale> _supportedLocales;
 
   final RegExp _replaceArgRegex = RegExp('{}');
   final RegExp _linkKeyMatcher =
@@ -27,12 +28,13 @@ class Localization {
   static Localization? of(BuildContext context) =>
       Localizations.of<Localization>(context, Localization);
 
-  static bool load(
-    Locale locale, {
+  static bool load(Locale locale, {
+    required List<Locale> supportedLocales,
     Translations? translations,
     Translations? fallbackTranslations,
   }) {
     instance._locale = locale;
+    instance._supportedLocales = supportedLocales;
     instance._translations = translations;
     instance._fallbackTranslations = fallbackTranslations;
     return translations == null ? false : true;
@@ -190,8 +192,12 @@ class Localization {
 
   String _resolve(String key, {bool logging = true, bool fallback = true}) {
     var resource = _translations?.get(key);
+    var l = logging;
+    if (l && _supportedLocales.length < 2) {
+      l = false;
+    }
     if (resource == null) {
-      if (logging) {
+      if (l) {
         Fimber.w('Localization key [$key] not found');
       }
       if (_fallbackTranslations == null || !fallback) {
@@ -199,7 +205,7 @@ class Localization {
       } else {
         resource = _fallbackTranslations?.get(key);
         if (resource == null) {
-          if (logging) {
+          if (l) {
             Fimber.w('Fallback localization key [$key] not found');
           }
           return key;
