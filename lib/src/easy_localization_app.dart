@@ -34,6 +34,11 @@ class EasyLocalization extends StatefulWidget {
   /// Locale when the locale is not in the list
   final Locale? fallbackLocale;
 
+  /// Print 'Localization key [...] not found' to Fimber when translation not found
+  /// This is callback to allow lazy initialization
+  /// @Default callback value is true
+  final bool Function() reportUntranslated;
+
   /// Overrides device locale.
   final Locale? startLocale;
 
@@ -82,6 +87,7 @@ class EasyLocalization extends StatefulWidget {
     required this.supportedLocales,
     required this.path,
     this.fallbackLocale,
+    this.reportUntranslated = _defReportUntranslated,
     this.startLocale,
     this.useOnlyLangCode = false,
     this.useFallbackTranslations = false,
@@ -93,6 +99,8 @@ class EasyLocalization extends StatefulWidget {
         super(key: key) {
     Fimber.d('Start');
   }
+
+  static bool _defReportUntranslated() => true;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -119,6 +127,7 @@ class _EasyLocalizationState extends State<EasyLocalization> {
     Fimber.d('Init state');
     localizationController = EasyLocalizationController(
       saveLocale: widget.saveLocale,
+      reportUntranslated: widget.reportUntranslated,
       fallbackLocale: widget.fallbackLocale,
       supportedLocales: widget.supportedLocales,
       startLocale: widget.startLocale,
@@ -261,7 +270,9 @@ class _EasyLocalizationDelegate extends LocalizationsDelegate<Localization> {
     Localization.load(value,
         supportedLocales: supportedLocales!,
         translations: localizationController!.translations,
-        fallbackTranslations: localizationController!.fallbackTranslations);
+        fallbackTranslations: localizationController!.fallbackTranslations,
+        reportUntranslatedCallback: localizationController!.reportUntranslated,
+    );
     return Future.value(Localization.instance);
   }
 

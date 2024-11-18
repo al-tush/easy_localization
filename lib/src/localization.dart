@@ -9,6 +9,7 @@ class Localization {
   Translations? _translations, _fallbackTranslations;
   late Locale _locale;
   late List<Locale> _supportedLocales;
+  late bool Function() _reportUntranslatedCallback;
 
   final RegExp _replaceArgRegex = RegExp('{}');
   final RegExp _linkKeyMatcher =
@@ -32,11 +33,13 @@ class Localization {
     required List<Locale> supportedLocales,
     Translations? translations,
     Translations? fallbackTranslations,
+    required bool Function() reportUntranslatedCallback,
   }) {
     instance._locale = locale;
     instance._supportedLocales = supportedLocales;
     instance._translations = translations;
     instance._fallbackTranslations = fallbackTranslations;
+    instance._reportUntranslatedCallback = reportUntranslatedCallback;
     return translations == null ? false : true;
   }
 
@@ -192,7 +195,7 @@ class Localization {
 
   String _resolve(String key, {bool logging = true, bool fallback = true}) {
     var resource = _translations?.get(key);
-    var l = logging;
+    var l = logging && _reportUntranslatedCallback();
     if (l && _supportedLocales.length < 2) {
       l = false;
     }

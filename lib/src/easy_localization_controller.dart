@@ -22,12 +22,14 @@ class EasyLocalizationController extends ChangeNotifier {
   final bool saveLocale;
   final bool useOnlyLangCode;
   List<Locale> supportedLocales;
+  final bool Function() reportUntranslated;
   Translations? _translations, _fallbackTranslations;
   Translations? get translations => _translations;
   Translations? get fallbackTranslations => _fallbackTranslations;
 
   EasyLocalizationController({
     required this.supportedLocales,
+    required this.reportUntranslated,
     required this.useFallbackTranslations,
     required this.saveLocale,
     required this.assetLoader,
