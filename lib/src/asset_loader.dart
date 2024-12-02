@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:ds_common/core/fimber/ds_fimber_base.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fimber/fimber.dart';
 import 'package:flutter/services.dart';
 
 /// abstract class used to building your Custom AssetLoader

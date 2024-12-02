@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:ds_common/core/fimber/ds_fimber_base.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/localization.dart';
-import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_test/flutter_test.dart';

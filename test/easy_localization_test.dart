@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ds_common/core/fimber/ds_fimber_base.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/easy_localization_controller.dart';
 import 'package:easy_localization/src/localization.dart';
-import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,31 +25,35 @@ void main() {
 
   group('localization', () {
     var r1 = EasyLocalizationController(
-        forceLocale: const Locale('en'),
-        path: 'path/en.json',
-        supportedLocales: const [Locale('en')],
-        useOnlyLangCode: true,
-        useFallbackTranslations: false,
-        saveLocale: false,
-        onLoadError: (FlutterError e) {
-          log(e.toString());
-        },
-        assetLoader: const JsonAssetLoader());
+      forceLocale: const Locale('en'),
+      path: 'path/en.json',
+      supportedLocales: const [Locale('en')],
+      useOnlyLangCode: true,
+      useFallbackTranslations: false,
+      saveLocale: false,
+      onLoadError: (FlutterError e) {
+        log(e.toString());
+      },
+      assetLoader: const JsonAssetLoader(),
+      reportUntranslated: () => false,
+    );
     var r2 = EasyLocalizationController(
-        forceLocale: const Locale('en', 'us'),
-        supportedLocales: const [Locale('en', 'us')],
-        path: 'path/en-us.json',
-        useOnlyLangCode: false,
-        useFallbackTranslations: false,
-        onLoadError: (FlutterError e) {
-          log(e.toString());
-        },
-        saveLocale: false,
-        assetLoader: const JsonAssetLoader());
+      forceLocale: const Locale('en', 'us'),
+      supportedLocales: const [Locale('en', 'us')],
+      path: 'path/en-us.json',
+      useOnlyLangCode: false,
+      useFallbackTranslations: false,
+      onLoadError: (FlutterError e) {
+        log(e.toString());
+      },
+      saveLocale: false,
+      assetLoader: const JsonAssetLoader(),
+      reportUntranslated: () => false,
+    );
     setUpAll(() async {
       await r1.loadTranslations();
       await r2.loadTranslations();
-      Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations);
+      Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations, reportUntranslatedCallback: () => false);
     });
     test('is a localization object', () {
       expect(Localization.instance, isInstanceOf<Localization>());
@@ -64,16 +68,18 @@ void main() {
 
     test('load() succeeds', () async {
       expect(
-          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations, reportUntranslatedCallback: () => false),
           true);
     });
 
     test('load() with fallback succeeds', () async {
       expect(
           Localization.load(const Locale('en'),
-              supportedLocales: const [Locale('en', 'us')],
-              translations: r1.translations,
-              fallbackTranslations: r2.translations),
+            supportedLocales: const [Locale('en', 'us')],
+            translations: r1.translations,
+            fallbackTranslations: r2.translations,
+            reportUntranslatedCallback: () => false,
+          ),
           true);
     });
 
@@ -95,6 +101,7 @@ void main() {
         },
         saveLocale: false,
         assetLoader: const ImmutableJsonAssetLoader(),
+        reportUntranslated: () => false,
       ).loadTranslations();
     });
 
@@ -109,7 +116,7 @@ void main() {
 
     test('load() Failed assertion', () async {
       try {
-        Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: null);
+        Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: null, reportUntranslatedCallback: () => false);
       } on AssertionError catch (e) {
         // throw  AssertionError('Expected ArgumentError');
         expect(e, isAssertionError);
@@ -118,21 +125,23 @@ void main() {
 
     test('load() correctly sets locale path', () async {
       expect(
-          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations, reportUntranslatedCallback: () => false),
           true);
       expect(Localization.instance.tr('path'), 'path/en.json');
     });
 
     test('load() respects useOnlyLangCode', () async {
       expect(
-          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations),
+          Localization.load(const Locale('en'), supportedLocales: r2.supportedLocales, translations: r1.translations, reportUntranslatedCallback: () => false),
           true);
       expect(Localization.instance.tr('path'), 'path/en.json');
 
       expect(
           Localization.load(const Locale('en', 'us'),
-              supportedLocales: const [Locale('en', 'us')],
-              translations: r2.translations),
+            supportedLocales: const [Locale('en', 'us')],
+            translations: r2.translations,
+            reportUntranslatedCallback: () => false,
+          ),
           true);
       expect(Localization.instance.tr('path'), 'path/en-us.json');
     });
@@ -189,24 +198,28 @@ void main() {
 
     group('tr', () {
       var r = EasyLocalizationController(
-          forceLocale: const Locale('en'),
-          supportedLocales: const [Locale('en'), Locale('fb')],
-          fallbackLocale: const Locale('fb'),
-          path: 'path',
-          useOnlyLangCode: true,
-          useFallbackTranslations: true,
-          onLoadError: (FlutterError e) {
-            log(e.toString());
-          },
-          saveLocale: false,
-          assetLoader: const JsonAssetLoader());
+        forceLocale: const Locale('en'),
+        supportedLocales: const [Locale('en'), Locale('fb')],
+        fallbackLocale: const Locale('fb'),
+        path: 'path',
+        useOnlyLangCode: true,
+        useFallbackTranslations: true,
+        onLoadError: (FlutterError e) {
+          log(e.toString());
+        },
+        saveLocale: false,
+        assetLoader: const JsonAssetLoader(),
+        reportUntranslated: () => false,
+      );
 
       setUpAll(() async {
         await r.loadTranslations();
         Localization.load(const Locale('en'),
-            supportedLocales: const [Locale('en', 'us')],
-            translations: r.translations,
-            fallbackTranslations: r.fallbackTranslations);
+          supportedLocales: const [Locale('en', 'us')],
+          translations: r.translations,
+          fallbackTranslations: r.fallbackTranslations,
+          reportUntranslatedCallback: () => false,
+        );
       });
       test('finds and returns resource', () {
         expect(Localization.instance.tr('test'), 'test');
@@ -374,24 +387,28 @@ void main() {
 
     group('plural', () {
       var r = EasyLocalizationController(
-          forceLocale: const Locale('en'),
-          supportedLocales: const [Locale('en'), Locale('fb')],
-          fallbackLocale: const Locale('fb'),
-          path: 'path',
-          useOnlyLangCode: true,
-          useFallbackTranslations: true,
-          onLoadError: (FlutterError e) {
-            log(e.toString());
-          },
-          saveLocale: false,
-          assetLoader: const JsonAssetLoader());
+        forceLocale: const Locale('en'),
+        supportedLocales: const [Locale('en'), Locale('fb')],
+        fallbackLocale: const Locale('fb'),
+        path: 'path',
+        useOnlyLangCode: true,
+        useFallbackTranslations: true,
+        onLoadError: (FlutterError e) {
+          log(e.toString());
+        },
+        saveLocale: false,
+        assetLoader: const JsonAssetLoader(),
+        reportUntranslated: () => false,
+      );
 
       setUpAll(() async {
         await r.loadTranslations();
         Localization.load(const Locale('en'),
-            supportedLocales: const [Locale('en', 'us')],
-            translations: r.translations,
-            fallbackTranslations: r.fallbackTranslations);
+          supportedLocales: const [Locale('en', 'us')],
+          translations: r.translations,
+          fallbackTranslations: r.fallbackTranslations,
+          reportUntranslatedCallback: () => false,
+        );
       });
 
       test('zero', () {
